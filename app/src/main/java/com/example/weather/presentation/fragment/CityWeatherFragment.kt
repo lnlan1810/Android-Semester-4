@@ -1,30 +1,30 @@
-package com.example.weather.fragment
-
+package com.example.weather.presentation.fragment
 import android.location.Geocoder
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.weather.R
-import com.example.weather.data.api.WeatherRepository
-import com.example.weather.data.model.info.WeatherInfo
 import com.example.weather.databinding.FragmentWeatherDetailBinding
+import com.example.weather.domain.entity.Weather
+import com.example.weather.domain.usecase.GetWeatherByIdUseCase
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-class WeatherDetailFragment : Fragment() {
+class CityWeatherFragment : Fragment() {
 
     private lateinit var binding: FragmentWeatherDetailBinding
-    private lateinit var city: WeatherInfo
+    private lateinit var city: Weather
     private lateinit var glide: RequestManager
+
+    private lateinit var getWeatherUseCase: GetWeatherByIdUseCase
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,7 +48,7 @@ class WeatherDetailFragment : Fragment() {
     private fun getData(idCity: Int) {
         lifecycleScope.launch {
             try {
-                city = repository.getWeatherById(idCity)
+                city = getWeatherUseCase(idCity)
                 setData(city)
             } catch (ex: HttpException) {
                 Timber.e(ex.message.toString())
@@ -56,24 +56,24 @@ class WeatherDetailFragment : Fragment() {
         }
     }
 
-    private fun setData(city: WeatherInfo) {
+    private fun setData(city: Weather) {
         with(binding) {
             tvCity.text = city.name
 
             val gcd = Geocoder(context)
-            val addresses = gcd.getFromLocation(city.coord.lat, city.coord.lon, 1);
+            val addresses = gcd.getFromLocation(city.latitude, city.longitude, 1);
 
             if (addresses.size > 0) {
                 val countryName = addresses[0].countryName
                 tvCountry.text = countryName
             }
-            glide.load("http://openweathermap.org/img/wn/${city.weather[0].icon}@2x.png")
+            glide.load("http://openweathermap.org/img/wn/${city.icon}@2x.png")
                 .into(ivWeather)
-            tvTemp.text = resources.getString(R.string.tv_temp, city.main.temp)
-            tvWeather.text = city.weather[0].description
-            tvHumidity.text = "${city.main.humidity}%"
-            tvWind.text = resources.getString(R.string.tv_wind, city.wind.speed)
-            tvDirection.text = when (city.wind.deg) {
+            tvTemp.text = resources.getString(R.string.tv_temp, city.temp)
+            tvWeather.text = city.desc
+            tvHumidity.text = "${city.humidity}%"
+            tvWind.text = resources.getString(R.string.tv_wind, city.windSpeed)
+            tvDirection.text = when (city.windDir) {
                 in 0..22 -> "N"
                 in 23..67 -> "NE"
                 in 68..112 -> "E"
@@ -87,23 +87,16 @@ class WeatherDetailFragment : Fragment() {
             }
             val formatter = SimpleDateFormat("HH:mm")
 
-            var date = Date((city.sys.sunrise + city.timezone) * 1000.toLong())
+            var date = Date((city.sunrise + city.timezone) * 1000.toLong())
             tvSunrise.text = formatter.format(date)
 
-            date = Date((city.sys.sunset + city.timezone) * 1000.toLong())
+            date = Date((city.sunset + city.timezone) * 1000.toLong())
             tvSunset.text = formatter.format(date)
 
 
             formatter.timeZone = TimeZone.getTimeZone("UTC")
             val dateInUtc = Date()
             date = Date(dateInUtc.time + city.timezone * 1000.toLong())
-           // tvCurrentTime.text = formatter.format(date)
         }
     }
-
-    private val repository by lazy {
-        WeatherRepository()
-    }
-
-
 }

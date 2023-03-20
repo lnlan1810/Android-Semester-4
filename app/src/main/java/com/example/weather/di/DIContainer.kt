@@ -1,14 +1,12 @@
-package com.example.weather.data.api
+package com.example.weather.di
 
 import androidx.viewbinding.BuildConfig
-import com.example.weather.data.model.info.WeatherInfo
-import com.example.weather.data.model.list.WeatherList
+import com.example.weather.data.api.WeatherApi
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
 
 private const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
 
@@ -21,7 +19,7 @@ private const val QUERY_UNITS = "units"
 private const val LANG_CODE = "en"
 private const val QUERY_LANG = "lang"
 
-class WeatherRepository {
+class DIContainer {
 
 
     //add api key
@@ -92,17 +90,5 @@ class WeatherRepository {
             .build()
             .create(WeatherApi::class.java)
     }
-
-
-    suspend fun getWeatherByName(city: String): WeatherInfo {
-        return api.getWeatherByName(city)
-    }
-
-    suspend fun getWeatherById(id: Int): WeatherInfo {
-        return api.getWeatherById(id)
-    }
-
-    suspend fun getNearCities(latitude: Double, longitude: Double, count: Int): WeatherList {
-        return api.getNearCities(latitude, longitude, count)
-    }
 }
+

@@ -1,42 +1,41 @@
-package com.example.weather.fragment
+package com.example.weather.presentation.fragment
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
 import com.example.weather.R
-import com.example.weather.data.api.WeatherRepository
-import com.example.weather.data.model.info.WeatherInfo
-import com.example.weather.data.model.list.City
 import com.example.weather.databinding.FragmentWeatherListBinding
-import com.example.weather.recyclerview.CityAdapter
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.example.weather.domain.entity.Weather
+import com.example.weather.domain.usecase.GetNearCitiesUseCase
+import com.example.weather.domain.usecase.GetWeatherByNameUseCase
+import com.example.weather.presentation.recyclerview.CityAdapter
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import timber.log.Timber
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+
 
 private const val COUNT_CITY = 10
 
-class WeatherListFragment : Fragment() {
-
+class ListCitiesFragment : Fragment() {
     private lateinit var binding: FragmentWeatherListBinding
     private lateinit var cityAdapter: CityAdapter
-    private lateinit var cities: List<City>
+    private lateinit var cities: List<Weather>
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var getWeatherByNameUseCase: GetWeatherByNameUseCase
+    private lateinit var getNearCitiesUseCase: GetNearCitiesUseCase
 
     //Moscow as default city
     private var latitude: Double = 55.644466
@@ -51,10 +50,6 @@ class WeatherListFragment : Fragment() {
         return binding.root
     }
 
-    private val repository by lazy {
-        WeatherRepository()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -66,9 +61,9 @@ class WeatherListFragment : Fragment() {
     private fun getList() {
         lifecycleScope.launch {
             try {
-                cities = repository.getNearCities(latitude, longitude, COUNT_CITY).list
+                cities = getNearCitiesUseCase(latitude, longitude, COUNT_CITY).list
                 context?.let{ context ->
-                    cityAdapter = CityAdapter(cities as ArrayList<City>, Glide.with(context)) { city ->
+                    cityAdapter = CityAdapter(cities as ArrayList<Weather>, Glide.with(context)) {city ->
                         navigateToWeatherDetails(city)
                     }
                     binding.rvWeather.adapter = cityAdapter
@@ -95,7 +90,7 @@ class WeatherListFragment : Fragment() {
             override fun onQueryTextSubmit(cityName: String): Boolean {
                 lifecycleScope.launch {
                     try {
-                        val id = repository.getWeatherByName(cityName).id
+                        val id = getWeatherByNameUseCase(cityName).id
                         navigateToWeatherDetails(id)
                     } catch (ex: HttpException) {
                         Snackbar.make(

@@ -1,12 +1,12 @@
-package com.example.weather.recyclerview
+package com.example.weather.presentation.recyclerview
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
-import com.example.weather.data.model.list.City
+import com.example.weather.domain.entity.Weather
 
 class CityAdapter(
-    private val list: ArrayList<City>,
+    private val list: ArrayList<Weather>,
     private val glide: RequestManager,
     private val selectCity: (Int) -> Unit
 ) : RecyclerView.Adapter<CityHolder>() {

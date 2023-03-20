@@ -1,4 +1,4 @@
-package com.example.weather.recyclerview
+package com.example.weather.presentation.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,9 +6,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.weather.R
-import com.example.weather.data.model.list.City
 import com.example.weather.databinding.ItemWeatherBinding
-
+import com.example.weather.domain.entity.Weather
 
 class CityHolder(
     private val binding: ItemWeatherBinding,
@@ -16,7 +15,7 @@ class CityHolder(
     private val selectCity: (Int) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    private var city: City? = null
+    private var city: Weather? = null
 
     init{
         itemView.setOnClickListener {
@@ -24,26 +23,26 @@ class CityHolder(
         }
     }
 
-    fun bind(item: City) {
+    fun bind(item: Weather) {
         city = item
         with(binding) {
-            glide.load("http://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png")
+            glide.load("http://openweathermap.org/img/wn/${item.icon}@2x.png")
                 .into(ivSmallWeather)
             tvName.text = item.name
-            val temp = String.format("%.1f", item.main.temp)
+            val temp = String.format("%.1f", item.temp)
             tvTemp.text = "${temp}°C"
             //tvTemp.text = Resources.getSystem().getString(R.string.tv_temp, item.main.temp)
 
-            when (item.main.temp) {
+            when (item.temp) {
                 in 30.0..40.0 -> setColor(R.color.temp_40)
                 in 20.0..30.0 -> setColor(R.color.temp_30)
                 in 15.0..20.0 -> setColor(R.color.temp_20)
                 in 10.0..15.0 -> setColor(R.color.temp_15)
-                in 0.0..10.0 -> setColor(R.color.white)
-                in -5.0..0.0 -> setColor(R.color.temp_minus_5)
-                in -15.0..-5.0 -> setColor(R.color.champaigne)
+                in 0.0..10.0 -> setColor(R.color.temp_10)
+                in -5.0..0.0 -> setColor(R.color.temp_0)
+                in -15.0..-5.0 -> setColor(R.color.temp_minus_5)
                 in -25.0..-15.0 -> setColor(R.color.temp_minus_15)
-                in -35.0..-25.0 -> setColor(R.color.black)
+                in -35.0..-25.0 -> setColor(R.color.temp_minus_25)
                 in -45.0..-35.0 -> setColor(R.color.temp_minus_35)
             }
         }

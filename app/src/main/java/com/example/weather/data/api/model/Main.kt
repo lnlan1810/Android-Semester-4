@@ -1,4 +1,5 @@
-package com.example.weather.data.model.info
+package com.example.weather.data.api.model
+
 import com.google.gson.annotations.SerializedName
 
 data class Main(
@@ -19,4 +20,3 @@ data class Main(
     @SerializedName("temp_min")
     val tempMin: Double
 )
-
