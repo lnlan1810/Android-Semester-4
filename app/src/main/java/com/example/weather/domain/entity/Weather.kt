@@ -3,6 +3,7 @@ package com.example.weather.domain.entity
 data class Weather(
     val id: Int,
     val name: String,
+    val countryName: String,
     val latitude: Double,
     val longitude: Double,
     val temp: Double,
@@ -11,8 +12,8 @@ data class Weather(
     val feelsLike: Double,
     val humidity: Int,
     val windSpeed: Double,
-    val windDir: Int,
-    val timezone: Int,
-    val sunrise: Int,
-    val sunset: Int,
+    val windDir: String,
+    val date: String,
+    val sunrise: String,
+    val sunset: String,
 )

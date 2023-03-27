@@ -5,8 +5,9 @@ import com.example.weather.domain.entity.Weather
 import com.example.weather.domain.repository.WeatherRepository
 import com.example.weather.domain.entity.Cities
 import com.example.weather.data.api.WeatherApi
+import javax.inject.Inject
 
-class WeatherRepositoryImpl(
+class WeatherRepositoryImpl @Inject constructor(
     private val api: WeatherApi,
     private val weatherMapper: WeatherMapper,
 ) : WeatherRepository {
