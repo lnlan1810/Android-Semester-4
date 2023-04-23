@@ -1,6 +1,7 @@
 package com.example.weather.domain.usecase
 
 
+import com.example.weather.data.api.response.WeatherResponse
 import com.example.weather.domain.entity.Weather
 import com.example.weather.domain.repository.WeatherRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -14,11 +15,6 @@ class GetWeatherByNameUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         city: String
-    ): Weather {
-        return withContext(dispatcher) {
-            weatherRepository.getWeatherByName(
-                city
-            )
-        }
-    }
+    ): WeatherResponse = weatherRepository.getWeatherByName(city)
+
 }
