@@ -36,5 +36,3 @@ class WeatherMapper @Inject constructor(
         list = response.weatherList.map { weatherInfo -> toWeather(weatherInfo) }
     )
 }
-
-
