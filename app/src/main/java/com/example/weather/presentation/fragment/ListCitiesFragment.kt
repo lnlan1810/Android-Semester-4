@@ -17,31 +17,24 @@ import com.example.weather.domain.entity.Weather
 import com.example.weather.presentation.activity.MainActivity
 import com.example.weather.presentation.recyclerview.CityAdapter
 import com.example.weather.presentation.viewmodel.ListViewModel
-import com.example.weather.utils.factory.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class ListCitiesFragment : Fragment(R.layout.fragment_weather_list) {
     private lateinit var binding: FragmentWeatherListBinding
     private lateinit var cityAdapter: CityAdapter
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-    private val viewModel: ListViewModel by viewModels { viewModelFactory }
+    private val viewModel: ListViewModel by viewModels()
 
     //Moscow as default city
     private var latitude: Double = 55.644466
     private var longitude: Double = 37.395744
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        (activity as MainActivity).appComponent.inject(this)
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -145,4 +138,5 @@ class ListCitiesFragment : Fragment(R.layout.fragment_weather_list) {
         }
     }
 }
+
 

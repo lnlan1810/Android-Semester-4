@@ -2,10 +2,11 @@ package com.example.weather.domain.converter
 
 import android.content.Context
 import android.location.Geocoder
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class CountryNameConverter @Inject constructor(
-    private var context: Context
+    @ApplicationContext private var context: Context
 ) {
     fun getCountryName(latitude: Double, longitude: Double): String {
         val gcd = Geocoder(context)
