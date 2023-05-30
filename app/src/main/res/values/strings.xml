@@ -5,4 +5,12 @@
     <string name="tv_temp">%1$.1f°C</string>
     <string name="tv_realfeel">ReelFeel %1$.1f°C</string>
     <string name="tv_wind">%1$.1f m/s</string>
+    <string name="transaction_poster">gg</string>
+    <string name="tv_humidity">%1$d%%</string>
+    <string name="current_weather_in">current weather in</string>
+    <string name="humidity">humidity</string>
+    <string name="wind">wind</string>
+    <string name="direction">direction</string>
+    <string name="sunrise">sunrise</string>
+    <string name="sunset">sunset</string>
 </resources>
